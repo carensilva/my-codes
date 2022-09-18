@@ -1,0 +1,143 @@
+var carta1 = {
+  nome: "Afrodite",
+  imagem: "https://4.bp.blogspot.com/-shwuK9ocuFk/W2x9FuTxUMI/AAAAAAAAmQw/wMDtqX6smX4v9aicTCeX7eub3GTMS5RRwCLcBGAs/s1600/Afrodite.jpg",
+  atributos: {
+    ataque: 700,
+    defesa: 800,
+    magia: 600
+  }
+};
+
+var carta2 = {
+  nome: "Apolo",
+  imagem: "https://1.bp.blogspot.com/-LWI48IWEtLs/XmqP-1taXdI/AAAAAAAAtI4/y5jv66h772M2l8NiqItVWbatiMdcXRsogCLcBGAsYHQ/s1600/Apolo--.jpg",
+  atributos: {
+    ataque: 800,
+    defesa: 700,
+    magia: 800
+  }
+};
+
+var carta3 = {
+  nome: "Ares",
+  imagem: "http://mythologian.net/wp-content/uploads/2012/08/ares.jpg",
+  atributos: {
+    ataque: 800,
+    defesa: 1000,
+    magia: 500
+  }
+};
+
+var carta4 = {
+  nome: "Artemis",
+  imagem: "https://static.wikia.nocookie.net/greekgoddesses/images/f/ff/Screen_Shot_2013-11-09_at_11.34.41_AM.png/revision/latest?cb=20131109033535",
+  atributos: {
+    ataque: 1000,
+    defesa: 100,
+    magia: 700
+  }
+};
+
+var carta5 = {
+  nome: "Athena",
+  imagem: "https://i.pinimg.com/originals/46/16/03/4616030ae791adaa99b318a0f54f2ded.jpg",
+  atributos: {
+    ataque: 900,
+    defesa: 700,
+    magia: 1000
+  }
+};
+
+var cartas = [carta1, carta2, carta3, carta4, carta5];
+var cartaMaquina;
+var cartaJogador;
+var carta = document.getElementById("cartas");
+var cartaTexto = "";
+
+function sortearCarta() {
+  var numeroCartaMarquina = parseInt(Math.random() * 3);
+  cartaMaquina = cartas[numeroCartaMarquina];
+  
+  var numeroCartaJogador = parseInt(Math.random() * cartas.length);
+  while(numeroCartaMarquina == numeroCartaJogador) {
+    numeroCartaJogador = parseInt(Math.random() * cartas.length);
+  }
+  cartaJogador = cartas[numeroCartaJogador];
+  console.log(cartas[numeroCartaJogador]);
+  
+  document.getElementById("buttonSortear").disabled = true;
+  exibirCartaJogador();
+  exibirOpcoes();
+}
+
+function exibirCartaJogador() {
+  cartaTexto = "<div id='cartaJogador'><img src='" + cartaJogador.imagem + "'>";
+  cartaTexto += "<h2>" + cartaJogador.nome + "</h2>";
+  cartaTexto += "<p>Ataque: " + cartaJogador.atributos.ataque + "</p>";
+  cartaTexto += "<p>Defesa: " + cartaJogador.atributos.defesa + "</p>";
+  cartaTexto += "<p>Magia: " + cartaJogador.atributos.magia + "</p></div>";
+ 
+  carta.innerHTML = cartaTexto;
+}
+
+function exibirCartaMaquina() {
+  cartaTexto += "<div id='cartaMaquina'><img src='" + cartaMaquina.imagem + "'>";
+  cartaTexto += "<h2>" + cartaMaquina.nome + "</h2>";
+  cartaTexto += "<p>Ataque: " + cartaMaquina.atributos.ataque + "</p>";
+  cartaTexto += "<p>Defesa: " + cartaMaquina.atributos.defesa + "</p>";
+  cartaTexto += "<p>Magia: " + cartaMaquina.atributos.magia + "</p></div>";
+ 
+  carta.innerHTML = cartaTexto;
+}
+
+function exibirOpcoes() {
+  var opcoes = document.getElementById("opcoes");
+  var opcoesTexto = "";
+  
+  for(var atributo in cartaJogador.atributos) {
+    opcoesTexto += "<input type='radio' name='atributo' onchange='opcaoSelecionada()' value='" + atributo + "'>" + atributo;
+  }
+  opcoes.innerHTML = opcoesTexto;
+  var radioAtributos = document.getElementsByName("atributo");
+  radioAtributos[1].checked;
+}
+
+function obtemAtributoSelecionado() {
+  var radioAtributos = document.getElementsByName("atributo");
+  for(var i = 0; i < radioAtributos.length; i++) {
+    if(radioAtributos[i].checked) {
+      return radioAtributos[i].value
+    }
+  }
+}
+
+function opcaoSelecionada() {
+  document.getElementById("buttonJogar").disabled = false;
+}
+
+function jogar() {
+  var atributoSelecionado = obtemAtributoSelecionado();
+  var elementoResultado = document.getElementById("resultado");
+  var valorCartaJogador = cartaJogador.atributos[atributoSelecionado];
+  var valorCartaMaquina = cartaMaquina.atributos[atributoSelecionado];
+  var botaoJogarNovamente = "<br><button type='button' id='buttonJogar' onclick='jogarNovamente()'>Jogar Novamente</button>";
+  
+  if(valorCartaJogador > valorCartaMaquina) {
+    elementoResultado.innerHTML = "ΝΙΚΗ!vitória!" + botaoJogarNovamente;
+  } else if (valorCartaMaquina > valorCartaJogador) {
+    elementoResultado.innerHTML = "ΗΤΤΑ. ΠΡΟΣΠΑΘΗΣΕ ΞΑΝΑ!Derrota. tente de novo!" + botaoJogarNovamente;
+  } else {
+    elementoResultado.innerHTML = "ΔΕΣΜΟΣ ΜΕΤΑΞΥ ΠΟΛΕΜΙΣΤΩΝ; ΤΕΝΕΙ ΞΑΝΑ!Empate entre guerreiros? tente de novo!" + botaoJogarNovamente;
+  }
+  document.getElementById("buttonJogar").disabled = true;
+  exibirCartaJogador();
+  exibirCartaMaquina();
+}
+
+function jogarNovamente() {
+  document.getElementById("resultado").innerHTML = "";
+  document.getElementById("cartas").innerHTML = "";
+  document.getElementById("opcoes").innerHTML = "";
+  document.getElementById("buttonSortear").disabled = false;
+  document.getElementById("buttonJogar").disabled = true;
+}
